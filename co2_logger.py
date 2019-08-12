@@ -29,7 +29,7 @@ while True:
         logfile.write(line)
     # Write the baseline every 60 seconds
     if baseline_counter == 12:
-        baseline_line = formatLine(current_time, sgp30.baseline_eC02, spg30.baseline_TVOC)
+        baseline_line = formatLine(current_time, sgp30.baseline_eCO2, sgp30.baseline_TVOC)
         with open("baseline_log.csv",'a') as baseline_log:
             baseline_log.write(baseline_line)
         baseline_counter = 0
