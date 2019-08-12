@@ -17,18 +17,21 @@ sgp30.set_iaq_baseline(0x8973, 0x8aae)
 
 elapsed_sec = 0
 
-def formatLine(co2_value, tvoc_value):
-    return ("{},{}\n".format(co2_value,tvoc_value))
+def formatLine(current_time, co2_value, tvoc_value):
+    return ("{},{},{}\n".format(current_time, co2_value, tvoc_value))
 
-
+baseline_counter = 11
 while True:
-    # print("eCO2 = %d ppm \t TVOC = %d ppb" % (sgp30.eCO2, sgp30.TVOC))
-    line = formatLine(sgp30.eCO2, sgp30.TVOC)
+    baseline_counter += 1
+    current_time = str(time.time())
+    line = formatLine(current_time, sgp30.eCO2, sgp30.TVOC)
     with open("log_co2.csv", 'a') as logfile:
         logfile.write(line)
+    # Write the baseline every 60 seconds
+    if baseline_counter == 12:
+        baseline_line = formatLine(current_time, sgp30.baseline_eC02, spg30.baseline_TVOC)
+        with open("baseline_log.csv",'a') as baseline_log:
+            baseline_log.write(baseline_line)
+        baseline_counter = 0
     time.sleep(5)
-    #elapsed_sec += 1
-    #if False and elapsed_sec > 10:
-    #    elapsed_sec = 0
-    #    print("**** Baseline values: eCO2 = 0x%x, TVOC = 0x%x"
-    #          % (sgp30.baseline_eCO2, sgp30.baseline_TVOC))
+ 
