@@ -34,7 +34,7 @@ try:
         if baseline_counter == 12:
             baseline_line = [current_time, sgp30.baseline_eCO2, sgp30.baseline_TVOC]
             with open("baseline_log.csv",'a') as baseline_log:
-                mywriter = csv.writer(logfile)
+                mywriter = csv.writer(baseline_log)
                 mywriter.writerow(baseline_line)
             baseline_counter = 0
         time.sleep(5)
