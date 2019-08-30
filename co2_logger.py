@@ -4,6 +4,7 @@ import time
 import board
 import busio
 import adafruit_sgp30
+import csv
 
 i2c = busio.I2C(board.SCL, board.SDA, frequency=100000)
 
@@ -17,21 +18,26 @@ sgp30.set_iaq_baseline(0x8973, 0x8aae)
 
 elapsed_sec = 0
 
-def formatLine(current_time, co2_value, tvoc_value):
-    return ("{},{},{}\n".format(current_time, co2_value, tvoc_value))
+#def formatLine(current_time, co2_value, tvoc_value):
+#    return ("{},{},{}\n".format(current_time, co2_value, tvoc_value))
 
 baseline_counter = 11
-while True:
-    baseline_counter += 1
-    current_time = str(time.time())
-    line = formatLine(current_time, sgp30.eCO2, sgp30.TVOC)
-    with open("log_co2.csv", 'a') as logfile:
-        logfile.write(line)
-    # Write the baseline every 60 seconds
-    if baseline_counter == 12:
-        baseline_line = formatLine(current_time, sgp30.baseline_eCO2, sgp30.baseline_TVOC)
-        with open("baseline_log.csv",'a') as baseline_log:
-            baseline_log.write(baseline_line)
-        baseline_counter = 0
-    time.sleep(5)
- 
+try:
+    while True:
+        baseline_counter += 1
+        current_time = str(time.time())
+        line = [current_time, sgp30.eCO2, sgp30.TVOC]
+        with open("log_co2.csv", 'a') as logfile:
+            mywriter = csv.writer(logfile)
+            mywriter.writerow(line)
+        # Write the baseline every 60 seconds
+        if baseline_counter == 12:
+            baseline_line = [current_time, sgp30.baseline_eCO2, sgp30.baseline_TVOC]
+            with open("baseline_log.csv",'a') as baseline_log:
+                mywriter = csv.writer(logfile)
+                mywriter.writerow(baseline_line)
+            baseline_counter = 0
+        time.sleep(5)
+except KeyboardInterrupt as key_int:
+     print("logging terminated")
+     exit(0)
