@@ -1,10 +1,19 @@
-""" Example for using the SGP30 with CircuitPython and the Adafruit library"""
-
 import time
 import board
 import busio
 import adafruit_sgp30
 import csv
+import argparse
+
+
+# Twelve hours in seconds
+DEFAULT_HOURS = 12
+
+
+parser = argparse.ArgumentParser()
+#parser.add_argument("-m","--monitor",action="store_true", help = "run the logger for 12 hours and create a file with the results")
+parser.add_argument("--num_hours", type = "int", help = "how many hours to run the logger", default = DEFAULT_HOURS)
+args = parser.parse_args()
 
 i2c = busio.I2C(board.SCL, board.SDA, frequency=100000)
 
@@ -14,30 +23,29 @@ sgp30 = adafruit_sgp30.Adafruit_SGP30(i2c)
 #print("SGP30 serial #", [hex(i) for i in sgp30.serial])
 
 sgp30.iaq_init()
-sgp30.set_iaq_baseline(0x8973, 0x8aae)
+sgp30.set_iaq_baseline(0x898f, 0x8b77)
 
-elapsed_sec = 0
+# Get current epoch time
+start_time = time.time()
+end_time = start_time + args.num_hours
+current_time = start_time
 
-#def formatLine(current_time, co2_value, tvoc_value):
-#    return ("{},{},{}\n".format(current_time, co2_value, tvoc_value))
+formatted_start_time = time.strftime("%a%d%b%H_%M")
 
-baseline_counter = 11
 try:
-    while True:
-        baseline_counter += 1
+    while current_time < end_time:
         current_time = str(time.time())
         line = [current_time, sgp30.eCO2, sgp30.TVOC]
-        with open("log_co2.csv", 'a') as logfile:
+        with open("{}.csv".format(formatted_start_time), 'a') as logfile:
             mywriter = csv.writer(logfile)
             mywriter.writerow(line)
-        # Write the baseline every 60 seconds
-        if baseline_counter == 12:
-            baseline_line = [current_time, sgp30.baseline_eCO2, sgp30.baseline_TVOC]
-            with open("baseline_log.csv",'a') as baseline_log:
-                mywriter = csv.writer(baseline_log)
-                mywriter.writerow(baseline_line)
-            baseline_counter = 0
+        baseline_line = [current_time, sgp30.baseline_eCO2, sgp30.baseline_TVOC]
+        with open("{}_baseline.csv".format(formatted_start_time),'a') as baseline_log:
+            mywriter = csv.writer(baseline_log)
+            mywriter.writerow(baseline_line)
         time.sleep(5)
+    print("{} hours of logging complete".format(args.num_hours))
+
 except KeyboardInterrupt as key_int:
      print("logging terminated")
      exit(0)
