@@ -11,8 +11,7 @@ DEFAULT_HOURS = 12
 
 
 parser = argparse.ArgumentParser()
-#parser.add_argument("-m","--monitor",action="store_true", help = "run the logger for 12 hours and create a file with the results")
-parser.add_argument("--num_hours", type = "int", help = "how many hours to run the logger", default = DEFAULT_HOURS)
+parser.add_argument("--num_hours", type = int, help = "how many hours to run the logger", default = DEFAULT_HOURS)
 args = parser.parse_args()
 
 i2c = busio.I2C(board.SCL, board.SDA, frequency=100000)
