@@ -29,7 +29,7 @@ start_time = time.time()
 end_time = start_time + (args.num_hours * 3600)
 current_time = start_time
 
-formatted_start_time = time.strftime("%a%d%b%H_%M")
+formatted_start_time = time.strftime("%y_%m_%d_%H_%M")
 
 try:
     while current_time < end_time:
