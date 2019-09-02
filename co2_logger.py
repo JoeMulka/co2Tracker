@@ -26,19 +26,19 @@ sgp30.set_iaq_baseline(0x898f, 0x8b77)
 
 # Get current epoch time
 start_time = time.time()
-end_time = start_time + args.num_hours
+end_time = start_time + (args.num_hours * 3600)
 current_time = start_time
 
 formatted_start_time = time.strftime("%a%d%b%H_%M")
 
 try:
     while current_time < end_time:
-        current_time = str(time.time())
-        line = [current_time, sgp30.eCO2, sgp30.TVOC]
+        current_time = time.time()
+        line = [str(current_time), sgp30.eCO2, sgp30.TVOC]
         with open("{}.csv".format(formatted_start_time), 'a') as logfile:
             mywriter = csv.writer(logfile)
             mywriter.writerow(line)
-        baseline_line = [current_time, sgp30.baseline_eCO2, sgp30.baseline_TVOC]
+        baseline_line = [str(current_time), sgp30.baseline_eCO2, sgp30.baseline_TVOC]
         with open("{}_baseline.csv".format(formatted_start_time),'a') as baseline_log:
             mywriter = csv.writer(baseline_log)
             mywriter.writerow(baseline_line)
