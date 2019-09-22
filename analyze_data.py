@@ -6,6 +6,7 @@ import argparse
 import datetime
 
 parser = argparse.ArgumentParser()
+timezone_offset = 3600 * 4
 
 parser.add_argument("datafile", help = "the file containing co2 and TVOC")
 args = parser.parse_args()
@@ -17,7 +18,7 @@ tvoc = []
 with open(args.datafile) as csvfile:
     myreader = csv.reader(csvfile)
     for row in myreader:
-        time.append(float(row[0]))
+        time.append(float(row[0]) - timezone_offset)
         co2.append(int(row[1]))
         tvoc.append(int(row[2]))
 
