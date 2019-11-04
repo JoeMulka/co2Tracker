@@ -4,20 +4,23 @@ import busio
 import adafruit_sgp30
 import csv
 import argparse
+from atmos import calculate
 
-
-# Twelve hours in seconds
 DEFAULT_HOURS = 12
 
+
+def calculateAbsoluteHumidity(rel_humidity, temperature):
+    absolute_humidity = calculate('AH', RH=rel_humidity, p=1e5, T=temperature, debug=True)
+    return absolute_humidity
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--num_hours", type = int, help = "how many hours to run the logger", default = DEFAULT_HOURS)
 args = parser.parse_args()
 
-i2c = busio.I2C(board.SCL, board.SDA, frequency=100000)
+sgp30_i2c = busio.I2C(board.SCL, board.SDA, frequency=100000)
 
 # Create library object on our I2C port
-sgp30 = adafruit_sgp30.Adafruit_SGP30(i2c)
+sgp30 = adafruit_sgp30.Adafruit_SGP30(sgp30_i2c)
 
 #print("SGP30 serial #", [hex(i) for i in sgp30.serial])
 
