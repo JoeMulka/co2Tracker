@@ -9,7 +9,8 @@ import adafruit_si7021
 
 
 def calculateAbsoluteHumidity(rel_humidity, temperature):
-    absolute_humidity = calculate('AH', RH=rel_humidity, p=1e5, T=temperature, debug=True)
+    temp_kelvin = temperature + 273.15
+    absolute_humidity = calculate('AH', RH=rel_humidity, p=1e5, T=temp_kelvin, debug=True)
     return absolute_humidity
 
 # Humidity and temperature sensor
@@ -26,7 +27,7 @@ while True:
     relative_humidity = temp_humid_sensor.relative_humidity
     print("\nTemperature: %0.1f C" % temp)
     print("Humidity: %0.1f %%" % relative_humidity)
-    absolute_humidity = calculateAbsoluteHumidity(relative_humidity, temp)
+    absolute_humidity = calculateAbsoluteHumidity(relative_humidity, temp)[0]
     print(absolute_humidity)
 
     time.sleep(2)
