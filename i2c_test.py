@@ -30,6 +30,6 @@ while True:
     print("\nTemperature: %0.1f C" % temp)
     print("Humidity: %0.1f %%" % relative_humidity)
     absolute_humidity = calculateAbsoluteHumidity(relative_humidity, temp)
-    print("Absolute Humidity: {} kg/m^3".format(absolute_humidity))
+    print("Absolute Humidity: {} g/m^3".format(absolute_humidity))
 
     time.sleep(2)

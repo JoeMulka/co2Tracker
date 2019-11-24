@@ -10,7 +10,10 @@ DEFAULT_HOURS = 12
 
 
 def calculateAbsoluteHumidity(rel_humidity, temperature):
-    absolute_humidity = calculate('AH', RH=rel_humidity, p=1e5, T=temperature, debug=True)
+    temp_kelvin = temperature + 273.15
+    absolute_humidity = calculate('AH', RH=rel_humidity, p=1e5, T=temp_kelvin, debug=True)[0]
+    # convert from kg/m^3 to g/m^3
+    absolute_humidity = absolute_humidity * 1000
     return absolute_humidity
 
 parser = argparse.ArgumentParser()
