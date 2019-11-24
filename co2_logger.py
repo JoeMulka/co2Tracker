@@ -7,7 +7,14 @@ import argparse
 from atmos import calculate
 import adafruit_si7021
 
+# Constants
 DEFAULT_HOURS = 12
+# How many seconds between reads
+seconds_between_reads = 5
+# Only need to measure and set humidity every minute
+humidity_frequency = 60
+humidity_counter = humidity_frequency # so that it sets on the first iteration of the loop
+# TODO: Need to get outdoor baseline and hardcode it here as constant
 
 def calculateAbsoluteHumidity(rel_humidity, temperature):
     temp_kelvin = temperature + 273.15
@@ -40,12 +47,7 @@ current_time = start_time
 
 formatted_start_time = time.strftime("%y_%m_%d_%H_%M")
 
-# How many seconds between reads
-seconds_between_reads = 5
 
-# Only need to measure and set humidity every minute
-humidity_frequency = 60
-humidity_counter = humidity_frequency # so that it sets on the first iteration of the loop
 
 try:
     while current_time < end_time:
