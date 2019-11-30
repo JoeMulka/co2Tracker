@@ -7,14 +7,15 @@ import argparse
 from atmos import calculate
 import adafruit_si7021
 
+#
 # Constants
+#
 DEFAULT_HOURS = 12
-# How many seconds between reads
-seconds_between_reads = 5
-# Only need to measure and set humidity every minute
-humidity_frequency = 60
+CO2_BASELINE = 0x898F
+TVOC_BASELINE = 0x8D4C
+seconds_between_reads = 5  # How many seconds between reads
+humidity_frequency = 60  # Only need to measure and set humidity every minute
 humidity_counter = humidity_frequency # so that it sets on the first iteration of the loop
-# TODO: Need to get outdoor baseline and hardcode it here as constant
 
 def calculateAbsoluteHumidity(rel_humidity, temperature):
     temp_kelvin = temperature + 273.15
@@ -31,6 +32,7 @@ args = parser.parse_args()
 # co2 and volatile organic compound sensor
 sgp30_i2c = busio.I2C(board.SCL, board.SDA, frequency=100000)
 sgp30 = adafruit_sgp30.Adafruit_SGP30(sgp30_i2c)
+sgp30.set_iaq_baseline(CO2_BASELINE, TVOC_BASELINE)
 
 # Humidity and temperature sensor
 si_7021_i2c = busio.I2C(board.SCL, board.SDA)
